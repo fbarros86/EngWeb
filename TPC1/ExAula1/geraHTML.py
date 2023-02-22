@@ -1,6 +1,6 @@
 import json
 
-f = open("mapa.json")
+f = open("../../mapa.json")
 mapa = json.load(f)
 
 cidades = mapa["cidades"]
