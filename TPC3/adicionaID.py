@@ -1,6 +1,8 @@
 import json
 
-pessoas = json.load(open("dataset-extra1.json"))["pessoas"]
+f= open("dataset-extra1.json")
+pessoas = json.load(f)["pessoas"]
+f.close()
 d=0
 for pessoa in pessoas:
     pessoa["id"]=d
