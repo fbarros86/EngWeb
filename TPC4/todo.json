@@ -1,0 +1,13 @@
+{
+  "users": [],
+  "tasks": [
+    {
+      "name": "Limpar a casa",
+      "duedate": "12-03-2023",
+      "who": "Francisca",
+      "what": "Limpar bueda cenas",
+      "id": 1,
+      "done": 1
+    }
+  ]
+}
