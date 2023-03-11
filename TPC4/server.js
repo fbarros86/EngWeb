@@ -45,16 +45,46 @@ var toDoServer = http.createServer(function (req, res) {
                 else if(/\/done\/[0-9]+$/i.test(req.url)){
                     var idTask = req.url.split("/")[2]
                     axios.get("http://localhost:3000/tasks/"+idTask)
-                                .then(response => {
-                                    var task = response.data
-                                    task.done = 1
-                                    axios.put("http://localhost:3000/tasks/" + idTask,task)
-                        .then( response => {
+                        .then(response => {
+                            var task = response.data
+                            task.done = 1
+                            axios.put("http://localhost:3000/tasks/" + idTask,task)
+                                .then( response => {
+                                    axios.get("http://localhost:3000/tasks")
+                                        .then(response => {
+                                            var tasks = response.data
+                                            res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
+                                            res.write(templates.todolist(tasks))
+                                            res.end()
+                                        })
+                                        .catch(function(erro){
+                                            res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
+                                            res.write("<p>Não foi possível obter a lista de tarefas a fazer... Erro: " + erro)
+                                            res.end()
+                                        })
+                                })
+                                .catch(erro => {
+                                    console.log("Erro a atualizar tarefa: "+ erro)
+                                })
+                                    
+                        })
+                        .catch(function(erro){
+                            res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
+                            res.write("<p>Não foi possível obter a tarefas a atualizar... Erro: " + erro)
+                            res.end()
+                        })
+                    
+                }
+                else if(/\/edit\/[0-9]+$/i.test(req.url)){
+                    var idTask = req.url.split("/")[2]
+                    axios.get("http://localhost:3000/tasks/"+idTask)
+                        .then(response =>{
+                            var task = response.data
                             axios.get("http://localhost:3000/tasks")
                                 .then(response => {
                                     var tasks = response.data
                                     res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
-                                    res.write(templates.todolist(tasks))
+                                    res.write(templates.todolist(tasks,task))
                                     res.end()
                                 })
                                 .catch(function(erro){
@@ -62,18 +92,13 @@ var toDoServer = http.createServer(function (req, res) {
                                     res.write("<p>Não foi possível obter a lista de tarefas a fazer... Erro: " + erro)
                                     res.end()
                                 })
+
                         })
-                        .catch(erro => {
-                            console.log("Erro a atualizar tarefa: "+ erro)
+                        .catch(err=>{
+                            res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
+                            res.write("<p>Não foi possível obter a tarefas a atualizar... Erro: " + erro)
+                            res.end()
                         })
-                                    
-                                })
-                                .catch(function(erro){
-                                    res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
-                                    res.write("<p>Não foi possível obter a tarefas a atualizar... Erro: " + erro)
-                                    res.end()
-                                })
-                    
                 }
                 else{
                     res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
@@ -109,7 +134,35 @@ var toDoServer = http.createServer(function (req, res) {
                             res.write("<p>Unable to collect data from body...</p>")
                             res.end()
                         }
-                    })}
+                })}
+                else if(/\/edit\/[0-9]+$/i.test(req.url)){
+                    collectRequestBodyData(req, result => {
+                        if(result){
+                            axios.put("http://localhost:3000/tasks/"+result.id,result)
+                                .then( response => {
+                                    axios.get("http://localhost:3000/tasks")
+                                        .then(response => {
+                                            var tasks = response.data
+                                            res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
+                                            res.write(templates.todolist(tasks))
+                                            res.end()
+                                        })
+                                        .catch(function(erro){
+                                            res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
+                                            res.write("<p>Não foi possível obter a lista de tarefas a fazer... Erro: " + erro)
+                                            res.end()
+                                        })
+                                })
+                                .catch(erro => {
+                                    console.log("Erro a atualizar task: "+ erro)
+                                })
+                        }
+                        else{
+                            res.writeHead(201, {'Content-Type': 'text/html;charset=utf-8'})
+                            res.write("<p>Unable to collect data from body...</p>")
+                            res.end()
+                        }
+                })}
                 else{
                     res.writeHead(200, {'Content-Type': 'text/html;charset=utf-8'})
                     res.write('<p>Unsupported POST request: ' + req.url + '</p>')

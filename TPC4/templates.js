@@ -1,4 +1,4 @@
-exports.todolist= function(tasks){
+exports.todolist= function(tasks,tasktoedit){
     pagHTML = `
     <!DOCTYPE html>
 <html>
@@ -18,19 +18,34 @@ exports.todolist= function(tasks){
                     <fieldset>
                         <legend>Tarefa</legend>
                         <div style="display: flex;">
-                            <label class="w3-padding">  Nome  </label>
-                            <input class="w3-input w3-round" type="text" name="name">
-                        <label class="w3-padding">  Data Limite  </label>
+                        `
+    if (tasktoedit){
+        pagHTML+=   `
+                        <label class="w3-padding">  Data  </label>
+                        <input class="w3-input w3-round" type="text" name="duedate" value="${tasktoedit.duedate}">
+                        <label class="w3-padding">  Quem  </label>
+                        <input class="w3-input w3-round" type="text" name="who" value="${tasktoedit.who}">
+                    </div>
+                    <div class="w3-padding">
+                        <label>Descrição</label>
+                        <input class="w3-input w3-round" type="text" name="what" value="${tasktoedit.what}">
+                        <input type="hidden" name="id" value="${tasktoedit.id}" />
+                    </div>`
+
+    }
+    else{
+        pagHTML+=   `
+                        <label class="w3-padding">  Data  </label>
                         <input class="w3-input w3-round" type="text" name="duedate">
-                        <label class="w3-padding">  Quem a Faz  </label>
+                        <label class="w3-padding">  Quem  </label>
                         <input class="w3-input w3-round" type="text" name="who">
                     </div>
-                    <div>
+                    <div class="w3-padding">
                         <label>Descrição</label>
                         <input class="w3-input w3-round" type="text" name="what">
-                    </div>
+                    </div>`}
                     
-                </fieldset>
+    pagHTML+=    `</fieldset>
                 <div class="w3-padding-small w3-right w3-left-margin">
                     <button class="w3-btn w3-teal w3-mb-2 w3-round-large" type="submit">Submit</button>
                 </div>
@@ -43,11 +58,8 @@ exports.todolist= function(tasks){
                 <div>
                     <table class="w3-table-all">
                         <tr>
-                        <td>
-                       Nome
-                    </td>
                             <td>
-                                Data limite
+                                Data Limite
                             </td>
                             <td>
                                 Quem
@@ -60,9 +72,6 @@ exports.todolist= function(tasks){
     for(var task of  tasks){
         if (!('done' in task)){
             pagHTML+= `<tr> 
-            <td>
-            ${task.name}
-        </td>
              <td>
                  ${task.duedate}
              </td>
@@ -74,7 +83,7 @@ exports.todolist= function(tasks){
              </td>
              <td>
                  <div class="w3-padding-small w3-right w3-left-margin">
-                     <button class="w3-btn w3-teal w3-mb-2 w3-round-large w3-mar" type="submit">Edit</button>
+                     <button class="w3-btn w3-teal w3-mb-2 w3-round-large w3-mar" type="submit"><a href="/edit/${task.id}">Edit</a></button>
                  </div>
                  <div class="w3-padding-small w3-right w3-left-margin">                            
                      <button class="w3-btn w3-teal w3-mb-2 w3-round-large" type="submit"><a href="/done/${task.id}">Done</a></button>
@@ -93,11 +102,8 @@ pagHTML+=`  </table>
                 <h1>TAREFAS REALIZADAS</h1>
                 <table class="w3-table-all">
                     <tr>
-                    <td>
-                   Nome
-                </td>
                         <td>
-                            Data limite
+                            Data Limite
                         </td>
                         <td>
                             Quem
@@ -109,9 +115,7 @@ pagHTML+=`  </table>
     for(var task of  tasks){
         if ('done' in task){
             pagHTML+=`<tr> 
-            <td>
-            ${task.name}
-        </td>
+
             <td>
                 ${task.duedate}
             </td>
