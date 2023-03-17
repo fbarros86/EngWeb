@@ -1,0 +1,73 @@
+extends layout
+
+block content
+  body.w3-light-grey
+    .header.w3-padding-16.w3-card
+      .w3-margin
+        h1 Introduza dados
+      .w3-container
+        form.w3-container(method="POST")
+          fieldset
+            legend Tarefa
+            if(tasktoedit)
+              div(style="display:flex;")
+                label.w3-padding Data
+                input.w3-input.w3-round(type="date", name="duedate",value=tasktoedit.duedate)
+                label.w3-padding Quem
+                input.w3-input.w3-round(type="text", name="who",value=tasktoedit.who)
+              .w3-padding
+                label Descrição
+                input.w3-input.w3-round(type="text",name="what",value=tasktoedit.what)
+                input(type="hidden",name="id",value=tasktoedit.id)
+            else
+              div(style="display:flex;")
+                label.w3-padding(class="w3-padding") Data
+                input.w3-input.w3-round(type="date", name="duedate")
+                label.w3-padding Quem
+                input.w3-input.w3-round(type="text", name="who")
+              .w3-padding
+                label Descrição
+                input.w3-input.w3-round(type="text",name="what")
+          .w3-padding-small.w3-right.w3-left-margin
+            button.w3-btn.w3-teal.w3-mb-2.w3-round-large(type="submit") Submit
+    
+
+
+
+
+    
+    .w3-row-padding.w3-padding.w3-card-4
+      .w3-half.w3-center.w3-card.w3-row-padding
+        h1 TAREFAS A REALIZAR 
+        table.w3-table-all 
+          tr
+            td Data Limite
+            td Quem 
+            td Info 
+            each task in tasks
+             if(task.done==1)
+             else
+               tr
+                 td #{task.duedate}
+                 td #{task.who}
+                 td #{task.what}
+                 td
+                   .w3-padding-small.w3-right.w3-left-margin
+                     button.w3-btn.w3-teal.w3-mb-2.w3-round-large.w3-mar(type="submit")
+                      a(href="/edit/"+task.id) Edit
+                     button.w3-btn.w3-teal.w3-mb-2.w3-round-large.w3-mar(type="submit")
+                      a(href="/done/"+task.id) Done
+      .w3-half.w3-center.w3-card.w3-row-padding
+        h1 TAREFAS REALIZADAS 
+        table.w3-table-all 
+          tr
+            td Data Limite
+            td Quem 
+            td Info 
+            each task in tasks
+             if(task["done"]==1)
+               tr
+                 td #{task.duedate}
+                 td #{task.who}
+                 td #{task.what}
+                        
